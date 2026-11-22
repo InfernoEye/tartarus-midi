@@ -26,5 +26,5 @@ jobs:
           test -n "$version"
           tag="v$version"
           gh release view "$tag" --repo "$GITHUB_REPOSITORY" > /dev/null
-          gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --notes-file RELEASE_NOTES.md
-          echo "Updated release notes for $tag"
+          gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --notes-file RELEASE_NOTES.md --title "Tartarus MIDI $tag" --prerelease=false
+          echo "Updated stable release notes for $tag"

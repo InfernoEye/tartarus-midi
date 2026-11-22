@@ -4,7 +4,7 @@
 
 Read the [Polish documentation](README.pl.md) / [Dokumentacja po polsku](README.pl.md).
 
-> **Experimental v0.2.0 / community toy.** Windows GitHub Actions **builds and tests pass**, and a [portable Windows x64 ZIP is available](https://github.com/InfernoEye/tartarus-midi/releases/tag/v0.2.0). **The project owner confirms that the chat-distributed V2 compiled and worked with a physical Tartarus Pro on Windows 11, including Polyphonic Aftertouch and D-pad octave/semitone transposition.** **The project owner has also tested the precompiled v0.2.0 Windows release executable successfully on their Tartarus Pro.** This remains an experimental release with limited hardware coverage. Please open a GitHub issue with your observations.
+> **v0.2.0 — hardware-tested Windows release.** Windows GitHub Actions builds and tests pass, and a [portable Windows x64 ZIP is available](https://github.com/InfernoEye/tartarus-midi/releases/tag/v0.2.0). Built for a friend, this version has been confirmed working on Windows 11 with a physical Razer Tartarus Pro, both when compiled locally and when using the precompiled GitHub Release. **Polyphonic Aftertouch and D-pad semitone/octave transposition have also been tested on hardware.** Other firmware or setups may still behave differently; feedback is welcome in GitHub Issues.
 
 ## Features
 
@@ -87,7 +87,7 @@ Pressure is mapped from depth **80–255** to MIDI pressure **0–127**, so low 
 
 Edit constants in `src/main.rs` to adjust the 20-note `NOTES` array, `NOTE_ON_DEPTH`, `NOTE_OFF_DEPTH`, `PRESSURE_INTERVAL`, and `PRESSURE_MIN_CHANGE`. The D-pad reader is in `src/dpad.rs`.
 
-The [Windows CI workflow](.github/workflows/windows.yml) runs tests and builds the project. The [release workflow](.github/workflows/release.yml) packages a Windows x64 ZIP and publishes a GitHub pre-release via Actions. For future versions, update `Cargo.toml` and `RELEASE_NOTES.md`, then use **Actions → Publish Windows release → Run workflow** with a matching `vX.Y.Z` tag. **CI passed; the project owner verified Polyphonic Aftertouch and D-pad transposition on the V2 build and also successfully ran the precompiled GitHub v0.2.0 executable on their Tartarus Pro.**
+The [Windows CI workflow](.github/workflows/windows.yml) runs tests and builds the project. The [release workflow](.github/workflows/release.yml) packages a Windows x64 ZIP and publishes a normal GitHub release via Actions. For future versions, update `Cargo.toml` and `RELEASE_NOTES.md`, then use **Actions → Publish Windows release → Run workflow** with a matching `vX.Y.Z` tag. **CI passed; the project owner verified Polyphonic Aftertouch and D-pad transposition on the V2 build and also successfully ran the precompiled GitHub v0.2.0 executable on their Tartarus Pro.**
 
 PRs and reports from Tartarus Pro owners are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
