@@ -1,0 +1,30 @@
+name: Sync published release notes
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - RELEASE_NOTES.md
+      - .github/workflows/sync-release-notes.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync-release-notes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update current release description
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          version=$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' Cargo.toml | head -n 1)
+          test -n "$version"
+          tag="v$version"
+          gh release view "$tag" --repo "$GITHUB_REPOSITORY" > /dev/null
+          gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --notes-file RELEASE_NOTES.md
+          echo "Updated release notes for $tag"
