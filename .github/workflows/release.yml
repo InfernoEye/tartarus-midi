@@ -23,7 +23,7 @@ concurrency:
 jobs:
   windows-release:
     # One-time bootstrap for v0.2.0; future releases use Run workflow.
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.event.head_commit.message == 'release: publish experimental v0.2.0')
+    if: "${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.event.head_commit.message == 'release: publish experimental v0.2.0') }}"
     runs-on: windows-latest
     env:
       RELEASE_TAG: ${{ inputs.tag || 'v0.2.0' }}
