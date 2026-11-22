@@ -1,0 +1,84 @@
+name: Publish Windows release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Version tag matching Cargo.toml (for example v0.2.0)"
+        type: string
+        required: true
+        default: "v0.2.0"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/release.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tartarus-midi-release
+  cancel-in-progress: false
+
+jobs:
+  windows-release:
+    # One-time bootstrap for v0.2.0; future releases use Run workflow.
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.event.head_commit.message == 'release: publish experimental v0.2.0')
+    runs-on: windows-latest
+    env:
+      RELEASE_TAG: ${{ inputs.tag || 'v0.2.0' }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Validate release version
+        shell: pwsh
+        run: |
+          $tag = $env:RELEASE_TAG
+          if ($tag -notmatch '^v[0-9]+\.[0-9]+\.[0-9]+$') {
+            throw "Expected a semantic version tag like v0.2.0 (got: $tag)"
+          }
+          $version = (Select-String -Path Cargo.toml -Pattern '^version\s*=\s*"([^"]+)"' | Select-Object -First 1).Matches.Groups[1].Value
+          if ($tag -ne "v$version") {
+            throw "Release tag $tag does not match Cargo.toml package version $version"
+          }
+
+      - name: Run unit tests
+        run: cargo test --all-targets
+
+      - name: Build optimized Windows executable
+        run: cargo build --release
+
+      - name: Package portable Windows ZIP
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $exe = 'target/release/tartarus-midi-v2.exe'
+          if (-not (Test-Path $exe)) { throw "Missing release executable: $exe" }
+          $dir = "dist/tartarus-midi-$env:RELEASE_TAG-windows-x86_64"
+          New-Item -ItemType Directory -Path $dir -Force | Out-Null
+          Copy-Item $exe -Destination "$dir/tartarus-midi.exe"
+          Copy-Item README.md, README.pl.md, LICENSE -Destination $dir
+          $archive = "dist/tartarus-midi-$env:RELEASE_TAG-windows-x86_64.zip"
+          Compress-Archive -Path "$dir/*" -DestinationPath $archive -Force
+          if (-not (Test-Path $archive)) { throw "Failed to package ZIP" }
+
+      - name: Save build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tartarus-midi-${{ env.RELEASE_TAG }}-windows-x86_64
+          path: dist/tartarus-midi-${{ env.RELEASE_TAG }}-windows-x86_64.zip
+          if-no-files-found: error
+
+      - name: Publish experimental GitHub pre-release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = $env:RELEASE_TAG
+          $archive = "dist/tartarus-midi-$tag-windows-x86_64.zip"
+          gh release create $tag $archive --repo "$env:GITHUB_REPOSITORY" --target "$env:GITHUB_SHA" --title "Tartarus MIDI $tag (experimental)" --notes-file RELEASE_NOTES.md --prerelease
+          if ($LASTEXITCODE -ne 0) { throw "GitHub release creation failed" }
