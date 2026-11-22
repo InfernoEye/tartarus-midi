@@ -22,6 +22,6 @@ The D-pad arrows are **observed, not blocked** from reaching Windows; they may s
 
 ## Experimental status
 
-This build is automated and checked by Windows GitHub Actions. **Physical-hardware behavior of v0.2.0 has not yet been verified.** This binary is unsigned; Windows SmartScreen may warn before launch. It is provided as-is, without installer or warranties. Please report issues, your device firmware, and observed MIDI output in GitHub Issues.
+This build is automated and checked by Windows GitHub Actions. **The project owner reports that the chat-distributed V2 source compiled successfully and worked with a physical Tartarus Pro on Windows 11.** Polyphonic Aftertouch and D-pad behavior have not yet been individually confirmed, and the published release ZIP has not been separately tested on hardware. This binary is unsigned; Windows SmartScreen may warn before launch. It is provided as-is, without installer or warranties. Please report issues, your device firmware, and observed MIDI output in GitHub Issues.
 
 Thanks to [ultramonaka/open-tartarus-driver](https://github.com/ultramonaka/open-tartarus-driver) for the Tartarus Pro HID protocol reverse-engineering. Licensed under **GPL-3.0-or-later**.
