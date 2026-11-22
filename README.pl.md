@@ -7,36 +7,35 @@ Projekt kontynuuje prototyp V1 i wykorzystuje publiczne ustalenia protokołu
 HID od [ultramonaka/open-tartarus-driver](https://github.com/ultramonaka/open-tartarus-driver/blob/main/research.md),
 plus bibliotekę [midir](https://github.com/Boddlnagg/midir).
 
-**Ważne:** kod jest przygotowany na podstawie repozytorium i zrzutu działania
-V1, ale nie został skompilowany ani sprawdzony na fizycznym Tartarus Pro
-w tym środowisku. Testuj na Windows 11 i zgłoś logi/błędy kompilacji.
+**Status eksperymentalny v0.2.0:** kod przeszedł kompilację i testy w GitHub Actions na Windows. Wersja V2 nie została jeszcze zweryfikowana na fizycznym Tartarus Pro. Zgłaszaj obserwacje i błędy w GitHub Issues.
 
-## Instalacja
+## Instalacja — gotowy plik EXE (Windows x64)
 
-1. Zainstaluj [Rust](https://rustup.rs/) (i MSVC C++ Build Tools, jeśli poprosi).
-2. W [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) utwórz
-   port `Tartarus MIDI` i zostaw program uruchomiony.
-3. Zamknij Razer Synapse oraz inne programy czytające ten sam Tartarus HID
-   (w szczególności `open-tartarus-driver` / V1).
-4. Ustaw `Tartarus MIDI` jako **MIDI input** w DAW / syntezatorze i włącz
-   monitorowanie/nasłuch wejścia MIDI.
-5. W PowerShell, w rozpakowanym folderze:
+1. Pobierz [**wydanie v0.2.0 dla Windows**](https://github.com/InfernoEye/tartarus-midi/releases/download/v0.2.0/tartarus-midi-v0.2.0-windows-x86_64.zip) i rozpakuj ZIP. **Rust nie jest potrzebny**, aby uruchomić gotowy program.
+2. Zamknij Razer Synapse oraz inne programy odczytujące Tartarus HID (`open-tartarus-driver` / V1).
+3. W [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) utwórz port `Tartarus MIDI` i pozostaw loopMIDI uruchomione.
+4. Uruchom `tartarus-midi.exe` — najlepiej z PowerShell, aby widzieć komunikaty MIDI.
+5. W DAW wybierz `Tartarus MIDI` jako MIDI input, załaduj instrument i włącz monitoring.
 
-```powershell
-cargo run --release
-```
+Zakończenie: `Ctrl+C`. Program wysyła wtedy Note Off dla wszystkich aktualnie trzymanych nut i kontroler MIDI All Notes Off (CC123).
 
-Zakończenie: `Ctrl+C`. Program wysyła wtedy Note Off dla wszystkich aktualnie
-trzymanych nut i kontroler MIDI All Notes Off (CC123).
-
-Jeżeli Twój port ma inną nazwę:
+Jeśli port MIDI ma inną nazwę, przed uruchomieniem ustaw zmienną `TARTARUS_MIDI_PORT`:
 
 ```powershell
 $env:TARTARUS_MIDI_PORT = "Moja nazwa portu"
-cargo run --release
+.\tartarus-midi.exe
 ```
 
-Można też wykonać `cargo test` (testy logiki, bez urządzenia MIDI).
+### Kompilowanie ze źródeł
+
+Zainstaluj [Rust](https://rustup.rs/) i ewentualnie MSVC C++ Build Tools, a następnie:
+
+```powershell
+cargo run --release
+cargo test
+```
+
+[GitHub Actions](.github/workflows/release.yml) automatycznie buduje i publikuje wydania Windows. Kolejne wersje możesz uruchamiać przez **Actions → Publish Windows release → Run workflow**, po zaktualizowaniu wersji w `Cargo.toml` i opisu w `RELEASE_NOTES.md`.
 
 ## MIDI
 
