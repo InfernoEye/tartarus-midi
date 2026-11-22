@@ -4,7 +4,7 @@
 
 Read the [Polish documentation](README.pl.md) / [Dokumentacja po polsku](README.pl.md).
 
-> **Experimental v0.2.0 / community toy.** The earlier V1 was reported to emit note-on/note-off messages on the author's device. **This V2 source has not yet been compiled on Windows 11 or validated with physical hardware by the assistant.** Please file a GitHub issue with build errors and device observations. No compiled binary is provided.
+> **Experimental v0.2.0 / community toy.** Windows GitHub Actions **builds and tests pass**, and a [portable Windows x64 ZIP is available](https://github.com/InfernoEye/tartarus-midi/releases/tag/v0.2.0). **Physical-hardware behavior of V2 has not yet been verified.** Please open a GitHub issue with your observations.
 
 ## Features
 
@@ -20,35 +20,29 @@ Read the [Polish documentation](README.pl.md) / [Dokumentacja po polsku](README.
 
 - **Windows 11** (Windows 10 might work, but has not been verified).
 - **Razer Tartarus Pro**, USB VID `1532`, PID `0244`. This is **not** the Tartarus V2.
-- Rust toolchain from [rustup.rs](https://rustup.rs/) (and MSVC C++ Build Tools if Rust asks for them).
+- Rust toolchain from [rustup.rs](https://rustup.rs/) **only if building from source** (and MSVC C++ Build Tools if Rust asks for them).
 - [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html): `midir` does **not** create virtual MIDI output ports on Windows, so loopMIDI hosts the port.
 - A DAW, standalone synthesizer, or MIDI monitor. An instrument needs **polyphonic key pressure support** to respond to aftertouch.
 
-## Quick start
+## Quick start (Windows x64 release)
 
-1. Quit **Razer Synapse** completely. Stop any other Tartarus application (including `open-tartarus-driver` and V1), which may compete for HID input or inject unwanted keystrokes.
-2. Start **loopMIDI** and add a port named `Tartarus MIDI`. Leave loopMIDI running.
-3. Open a PowerShell terminal in this project and run:
+1. Download the [**v0.2.0 Windows ZIP**](https://github.com/InfernoEye/tartarus-midi/releases/download/v0.2.0/tartarus-midi-v0.2.0-windows-x86_64.zip) and extract it. You do **not** need Rust to run the released executable.
+2. Quit **Razer Synapse** and stop other Tartarus applications (including `open-tartarus-driver` and V1).
+3. Start **loopMIDI**, create a port named `Tartarus MIDI`, and leave it running.
+4. Start `tartarus-midi.exe` (preferably from PowerShell to see MIDI event logs).
+5. In your DAW, enable **Tartarus MIDI** as an input, load an instrument, and enable MIDI monitoring. Stop with **Ctrl+C**.
 
-   ```powershell
-   cargo run --release
-   ```
+To use another loopMIDI port name, set `TARTARUS_MIDI_PORT` before launching the executable.
 
-4. In your DAW, enable MIDI input from **Tartarus MIDI** on an instrument track and enable input monitoring.
-5. Press analog keys. Stop with **Ctrl+C**.
+### Building from source
 
-To select a loopMIDI port whose name differs from `Tartarus MIDI`:
+Install Rust and MSVC Build Tools as needed, then run:
 
 ```powershell
-$env:TARTARUS_MIDI_PORT = "My MIDI Port"
 cargo run --release
 ```
 
-To run source-level unit tests without the physical device (requires a Windows Rust build environment):
-
-```powershell
-cargo test
-```
+Run the unit tests without physical hardware using `cargo test`.
 
 ### Example console output
 
@@ -86,14 +80,14 @@ Pressure is mapped from depth **80–255** to MIDI pressure **0–127**, so low 
 - **Aftertouch support depends on your instrument.** Some VSTs support only channel aftertouch, not polyphonic per-note pressure. Map Poly Key Pressure to a musical parameter in the synth if necessary.
 - Analog streaming is enabled by sending the Razer **device mode 3** feature report to its control interface. Hardware/firmware behavior may vary. The upstream research notes a reported firmware reconnect issue on some units after this command.
 - Raw HID access and D-pad identification are Windows-specific; this is not a generic gaming-keypad MIDI driver.
-- This repository currently has **no graphical configuration UI, MPE, installers, or downloadable releases**.
+- This repository currently has **no graphical configuration UI, MPE, or installer**; the release is a portable, unsigned executable.
 - Graceful shutdown sends Note Off / CC123; abrupt termination, USB unplugging, or power loss may require using your DAW's **Panic / All Notes Off** function.
 
 ## Configuration and development
 
 Edit constants in `src/main.rs` to adjust the 20-note `NOTES` array, `NOTE_ON_DEPTH`, `NOTE_OFF_DEPTH`, `PRESSURE_INTERVAL`, and `PRESSURE_MIN_CHANGE`. The D-pad reader is in `src/dpad.rs`.
 
-A Windows CI workflow is included at `.github/workflows/windows.yml` to compile and run unit tests after publication. **A green workflow does not establish that analog HID and device-specific Raw Input work on physical hardware.**
+The [Windows CI workflow](.github/workflows/windows.yml) runs tests and builds the project. The [release workflow](.github/workflows/release.yml) packages a Windows x64 ZIP and publishes a GitHub pre-release via Actions. For future versions, update `Cargo.toml` and `RELEASE_NOTES.md`, then use **Actions → Publish Windows release → Run workflow** with a matching `vX.Y.Z` tag. **Passing CI does not prove physical-hardware compatibility.**
 
 PRs and reports from Tartarus Pro owners are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
