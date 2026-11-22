@@ -7,7 +7,7 @@ Projekt kontynuuje prototyp V1 i wykorzystuje publiczne ustalenia protokołu
 HID od [ultramonaka/open-tartarus-driver](https://github.com/ultramonaka/open-tartarus-driver/blob/main/research.md),
 plus bibliotekę [midir](https://github.com/Boddlnagg/midir).
 
-**Status eksperymentalny v0.2.0:** kod przeszedł kompilację i testy w GitHub Actions na Windows. Autor projektu potwierdził, że wersja V2 udostępniona w tej rozmowie skompilowała się i działała z fizycznym Tartarus Pro na Windows 11, w tym **Polyphonic Aftertouch** oraz **transpozycja D-padem o półtony i oktawy**. Binarka z GitHub Releases nie została przetestowana osobno. Zgłaszaj obserwacje i błędy w GitHub Issues.
+**Status eksperymentalny v0.2.0:** kod przeszedł kompilację i testy w GitHub Actions na Windows. Autor projektu potwierdził, że wersja V2 udostępniona w tej rozmowie skompilowała się i działała z fizycznym Tartarus Pro na Windows 11, w tym **Polyphonic Aftertouch** oraz **transpozycja D-padem o półtony i oktawy**. **Autor przetestował również gotowy plik EXE z GitHub Releases v0.2.0 na fizycznym Tartarus Pro i potwierdził, że działa.** Wydanie pozostaje eksperymentalne ze względu na ograniczoną liczbę testowanych konfiguracji. Zgłaszaj obserwacje i błędy w GitHub Issues.
 
 ## Instalacja — gotowy plik EXE (Windows x64)
 
