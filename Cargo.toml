@@ -1,0 +1,11 @@
+[package]
+name = "tartarus-midi-v2"
+version = "0.2.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Razer Tartarus Pro HID to MIDI with polyphonic aftertouch and hardware-scoped D-pad transposition (Windows 11)"
+
+[dependencies]
+hidapi = "2.6"
+midir = "0.11.1"
+ctrlc = "3.4"
